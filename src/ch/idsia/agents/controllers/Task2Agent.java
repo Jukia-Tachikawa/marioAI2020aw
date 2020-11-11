@@ -30,9 +30,7 @@ package ch.idsia.agents.controllers;
 import ch.idsia.agents.Agent;
 import ch.idsia.benchmark.mario.engine.GeneralizerLevelScene;
 import ch.idsia.benchmark.mario.engine.sprites.Mario;
-import ch.idsia.benchmark.mario.engine.sprites.Sprite;
 import ch.idsia.benchmark.mario.environments.Environment;
-import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,10 +63,10 @@ public boolean isObstacle(int r, int c){
 			|| getReceptiveFieldCellValue(r, c)==GeneralizerLevelScene.LADDER;
 }
 
-public boolean isHole(int c) {
-	for(int i = marioEgoRow; i <= 18; i++) {
-		if(getReceptiveFieldCellValue(i,c) != 0) {
-			return false;
+public boolean isHole(int c) {//水平方向の座標cの位置に穴があればtrue, なければfalseを返す
+	for(int r = marioEgoRow; r <= 18; r++) {
+		if(getReceptiveFieldCellValue(r,c) != 0) {//水平位置cにおいてマリオより下に障害物があれば	                                           *
+			return false;                         //falseを返す
 		}
 	}
 	return true;
@@ -76,13 +74,14 @@ public boolean isHole(int c) {
 
 public boolean[] getAction()
 {
+	boolean jumpOrNot = isMarioAbleToJump || !isMarioOnGround;
 	
 	if(isObstacle(marioEgoRow, marioEgoCol + 1)){
-		action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
+		action[Mario.KEY_JUMP] = jumpOrNot;
 	}
 	
 	if(isHole(marioEgoCol + 1)) {
-		action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
+		action[Mario.KEY_JUMP] = jumpOrNot;
 	}
 	
 	return action;
